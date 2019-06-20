@@ -25,7 +25,7 @@ fun main( args: Array<String>) {
 
             EngineLaunchpoint.gle
             master = MasterModel()
-            uiManager.launchRoot(master)
+            uiManager.init(master)
 
         }
 

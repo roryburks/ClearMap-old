@@ -4,12 +4,12 @@ import clearMap.model.IMasterModel
 import javax.swing.WindowConstants
 
 interface IUIManager {
-    fun launchRoot( model: IMasterModel)
+    fun init(model: IMasterModel)
 
 }
 
 class UIManager  : IUIManager {
-    override fun launchRoot(model: IMasterModel) {
+    override fun init(model: IMasterModel) {
         val root = RootWindow(model)
         root.pack()
         root.isLocationByPlatform = true
