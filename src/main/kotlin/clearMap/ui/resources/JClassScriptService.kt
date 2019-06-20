@@ -1,6 +1,5 @@
 package clearMap.ui.resources
 
-import java.io.IOException
 import java.util.*
 
 interface IScriptService {
@@ -16,7 +15,7 @@ class JClassScriptService(private val _logger: ILogger) : IScriptService {
                 scanner.useDelimiter("\\A")
                 ret = scanner.next()
             }
-        }catch( e: IOException) {
+        }catch( e: Exception) {
             _logger.logError("Couldn't load shader script file: [$scriptName]", e)
         }
         return ret
