@@ -1,6 +1,7 @@
 package clearMap.ui.systems
 
 import clearMap.model.commands.ICentralCommandExecutor
+import clearMap.model.commands.ICommand
 import clearMap.ui.resources.ILogger
 import rb.glow.gle.IGLEngine
 import sgui.UIPoint
