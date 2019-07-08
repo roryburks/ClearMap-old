@@ -1,5 +1,8 @@
 package clearMap.hybrid
 
+import clearMap.ui.resources.ConsoleLogger
+import clearMap.ui.resources.EngineLaunchpoint
+import clearMap.ui.resources.ILogger
 import rb.glow.gl.IGL
 import rb.glow.gle.IGLEngine
 import rb.glow.gle.IImageConverter
@@ -28,6 +31,8 @@ interface IHybrid {
     val gl : IGL
     val gle : IGLEngine
 
+    val logger: ILogger
+
 //    fun LockFrom( o: Any) : ILock
     fun beep()
 }
@@ -42,14 +47,17 @@ object SwHybrid : IHybrid {
     override val gl: IGL get() = JOGLProvider.gl
 //    override val imageCreator: IImageCreator get() = SwImageCreator
     override val imageConverter: AwtImageConverter get() = AwtImageConverter{EngineLaunchpoint.gle}
-    override val imageIO: IImageIO get() = JImageIO
-    override val clipboard: IClipboard get() = SwClipboard
+//    override val imageIO: IImageIO get() = JImageIO
+//    override val clipboard: IClipboard get() = SwClipboard
 
     override val mouseSystem: IMouseSystem get() = SwMouseSystem
     override val keypressSystem: MKeypressSystem = KeypressSystem
 
-    override fun LockFrom(o: Any): ILock = JLock(o)
+//    override fun LockFrom(o: Any): ILock = JLock(o)
     override fun beep() {
         java.awt.Toolkit.getDefaultToolkit().beep()
     }
+
+
+    override val logger = ConsoleLogger
 }

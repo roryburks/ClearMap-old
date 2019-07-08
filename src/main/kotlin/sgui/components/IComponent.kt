@@ -11,7 +11,7 @@ interface IComponent {
     // Consider the following situation:
     //  -Abstract game component ToolSettingSection contains an IComponent representing its ui component on screen.
     //  -ToolSettingSection also has model logic in it and has listeners attached to it, it wants these listeners to
-    //      be weak so that ToolSettingSection can disappear without having to tell its MasterModel so that it doesn't
+    //      be weak so that ToolSettingSection can disappear without having to tell its MasterControl so that it doesn't
     //      have to worry about explicitly listening for its death in the Swing universe.
     //  -The JComponent has a reference to IComponent, so the visuals stay in memory as long as it's in the Swing system
     //  -But IComponent does not have any reference to ToolSettingSection, so the only references that still exist are
