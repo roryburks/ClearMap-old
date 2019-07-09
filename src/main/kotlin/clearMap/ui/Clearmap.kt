@@ -19,12 +19,12 @@ fun main( args: Array<String>) {
         setupSwGuiStuff()
         UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName())
 
+        master = MasterModel()
         SwingUtilities.invokeAndWait {
             val bi = BufferedImage(10,10, BufferedImage.TYPE_4BYTE_ABGR)
             RasterHelper.getDataStorageFromBi(bi)
 
             EngineLaunchpoint.gle
-            master = MasterModel()
             uiManager.init(master)
 
         }

@@ -33,3 +33,15 @@ interface ICentralCommandExecutor {
     val validCommands: List<String>
     fun executeCommand( command: String, extra: Any?) : Boolean
 }
+
+class CentralCommandExecutor(val master: IMasterModel) : ICentralCommandExecutor{
+    override val commandDomains: List<String>
+        get() = TODO("not implemented")
+    override val validCommands: List<String>
+        get() = TODO("not implemented")
+
+    override fun executeCommand(command: String, extra: Any?): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+}

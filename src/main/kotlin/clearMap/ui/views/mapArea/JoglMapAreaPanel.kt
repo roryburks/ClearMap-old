@@ -2,12 +2,16 @@ package clearMap.ui.views.mapArea
 
 import clearMap.hybrid.Hybrid
 import clearMap.model.penner.IPenner
+import clearMap.model.penner.Penner
+import com.jogamp.opengl.GLAutoDrawable
 import com.jogamp.opengl.GLCapabilities
+import com.jogamp.opengl.GLEventListener
 import com.jogamp.opengl.GLProfile
 import com.jogamp.opengl.awt.GLJPanel
 import jpen.*
 import jpen.event.PenListener
 import jpen.owner.multiAwt.AwtPenToolkit
+import rb.glow.gle.GLGraphicsContext
 import rb.vectrix.mathUtil.round
 import rbJvm.glow.jogl.JOGLProvider
 import sgui.components.events.MouseEvent
@@ -18,12 +22,14 @@ import javax.swing.SwingUtilities
 
 class JoglMapAreaPanel
 private constructor(
-    private val _penner: IPenner,
+    private val _penner: Penner,
+    private val _context: MapSection,
     private val _canvas: GLJPanel)
     :ISwComponent by SwComponent(_canvas)
 {
-    constructor(penner: IPenner) : this(
+    constructor(penner: Penner, context : MapSection) : this(
         penner,
+        context,
         GLJPanel(GLCapabilities(GLProfile.getDefault())))
 
     init {
@@ -35,7 +41,7 @@ private constructor(
         })
 
         _canvas.skipGLOrientationVerticalFlip = true
-        //Hybrid.timing.createTimer(50, true){redraw()}
+        Hybrid.timing.createTimer(50, true){redraw()}
 
         fun MButtonFromPButton( pbutton: PButton) = when(val x = pbutton.type) {
             PButton.Type.LEFT -> MouseEvent.MouseButton.LEFT
@@ -88,6 +94,65 @@ private constructor(
             }
 
             override fun penScrollEvent(p0: PScrollEvent) {}
+        })
+
+
+        val mouseAdapter = object : MouseAdapter() {
+            fun update(e: java.awt.event.MouseEvent) {
+                _penner.holdingAlt = e.isAltDown
+                _penner.holdingCtrl = e.isControlDown
+                _penner.holdingShift = Hybrid.keypressSystem.holdingSpace
+
+            }
+
+            override fun mouseMoved(e: java.awt.event.MouseEvent) = update(e)
+            override fun mouseDragged(e: java.awt.event.MouseEvent)  = update(e)
+            override fun mousePressed(e: java.awt.event.MouseEvent) {
+                update(e)
+                _canvas.requestFocus()
+            }
+            override fun mouseReleased(e: java.awt.event.MouseEvent) = update(e)
+        }
+
+        _canvas.addMouseMotionListener(mouseAdapter)
+        _canvas.addMouseListener(mouseAdapter)
+
+        _canvas.addGLEventListener(object : GLEventListener {
+            override fun reshape(drawable: GLAutoDrawable?, x: Int, y: Int, width: Int, height: Int) {}
+            override fun dispose(drawable: GLAutoDrawable?) {}
+
+            override fun display(drawable: GLAutoDrawable) {
+
+                val w = drawable.surfaceWidth
+                val h = drawable.surfaceHeight
+
+                val gle = Hybrid.gle
+                val glgc = GLGraphicsContext(w, h, false, gle, true)
+
+                JOGLProvider.gl2 = drawable.gl.gL2
+                gle.setTarget(null)
+                glgc.clear()
+
+                val gl = gle.gl
+                gl.viewport(0, 0, w, h)
+
+                MapAreaDrawer.drawMap(glgc, _context )
+                JOGLProvider.gl2 = null
+            }
+
+            override fun init(drawable: GLAutoDrawable) {
+                // Disassociate default workspace and assosciate the workspace from the GLEngine
+                //	(so they can share resources)
+                val primaryContext = JOGLProvider.context
+
+                val unusedDefaultContext = drawable.context
+                unusedDefaultContext.makeCurrent()
+                drawable.setContext( null, true)
+
+                val subContext = drawable.createContext( primaryContext)
+                subContext.makeCurrent()
+                drawable.setContext(subContext, true)
+            }
         })
     }
 }

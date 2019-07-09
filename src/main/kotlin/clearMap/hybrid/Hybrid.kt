@@ -20,7 +20,7 @@ import sguiSwing.mouseSystem.SwMouseSystem
 interface IHybrid {
 //    val imageCreator : IImageCreator
     val imageConverter : IImageConverter
-//    val timing : ITimerEngine
+    val timing : ITimerEngine
     val ui : IComponentProvider
 //    val imageIO : IImageIO
 //    val clipboard : IClipboard
@@ -42,7 +42,7 @@ val Hybrid : IHybrid get() = SwHybrid
 object SwHybrid : IHybrid {
 
     override val ui: IComponentProvider get() = SwingComponentProvider
-//    override val timing: ITimerEngine get() = SwTimerEngine
+    override val timing: ITimerEngine get() = SwTimerEngine
     override val gle: IGLEngine = EngineLaunchpoint.gle
     override val gl: IGL get() = JOGLProvider.gl
 //    override val imageCreator: IImageCreator get() = SwImageCreator
