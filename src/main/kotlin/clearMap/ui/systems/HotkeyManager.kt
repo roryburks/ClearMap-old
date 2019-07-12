@@ -23,11 +23,11 @@ private const val ALT = InputEvent.ALT_DOWN_MASK
 private const val CTRL = InputEvent.CTRL_DOWN_MASK
 private const val SHIFT = InputEvent.SHIFT_DOWN_MASK
 
-private val defaultHotkeys = mapOf<KeyCommand,Hotkey>()
+private val DefaultHotkeys = mapOf<KeyCommand,Hotkey>()
 
 class HotkeyManager(
     val preferences: IPreferences,
-    defaultHotkeys: Map<KeyCommand, Hotkey>) : IHotkeyManager {
+    defaultHotkeys: Map<KeyCommand, Hotkey> = DefaultHotkeys) : IHotkeyManager {
     private val hotkeyMap = MutableOneToManyMap<KeyCommand, Hotkey>()
 
     init {

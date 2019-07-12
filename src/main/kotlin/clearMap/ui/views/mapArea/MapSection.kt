@@ -3,21 +3,16 @@ package clearMap.ui.views.mapArea
 import clearMap.hybrid.Hybrid
 import clearMap.model.IMasterModel
 import clearMap.model.map.CwMap
-import clearMap.model.penner.IPenner
 import clearMap.model.penner.Penner
-import clearMap.model.penner.PennerBehavior
 import clearMap.model.penner.ViewSpace
 import clearMap.ui.systems.omniContainer.IOmniComponent
 import rb.owl.bindable.addObserver
 import rb.vectrix.linear.Vec2f
-import rb.vectrix.mathUtil.d
 import rb.vectrix.mathUtil.f
-import rb.vectrix.mathUtil.floor
 import rb.vectrix.mathUtil.round
-import rb.vectrix.shapes.RectD
-import rb.vectrix.shapes.RectI
 import sgui.Orientation
 import sgui.components.IComponent
+import sgui.components.IComponentProvider
 import sgui.components.crossContainer.ICrossPanel
 import sguiSwing.SwIcon
 import sguiSwing.components.SwPanel
@@ -29,28 +24,31 @@ private const val scrollRatio = 10
 private const val scrollBuffer = 100
 
 class MapSection (
-    val master: IMasterModel,
-    val panel : ICrossPanel = Hybrid.ui.CrossPanel())
+    private val _master: IMasterModel,
+    private val _ui : IComponentProvider)
     : IOmniComponent
 {
+    val panel : ICrossPanel = _ui.CrossPanel()
+
+
     override val component: IComponent get() = panel
     override val icon: SwIcon? get() = null
     override val name: String get() = "Map"
 
-    val penner = Penner(master, this)
+    val penner = Penner(_master, this)
 
-    val currentMap get() = master.mapSpace.mapsBind.currentlySelected
+    val currentMap get() = _master.mapSpace.mapsBind.currentlySelected
     val currentView  get() = currentMap?.run { _viewMap[this]} ?: _defaultView
     private val _viewMap = mutableMapOf<CwMap, ViewSpace>()
     private val _defaultView = ViewSpace()
 
 
     // ==== UI Components ====
-    private val workAreaContainer = Hybrid.ui.CrossPanel()
-    private val coordinateLabel = Hybrid.ui.Label()
-    private val messageLabel = Hybrid.ui.Label()
-    private val vScroll = Hybrid.ui.ScrollBar(Orientation.VERTICAL, panel)
-    private val hScroll = Hybrid.ui.ScrollBar(Orientation.HORIZONTAL, panel)
+    private val workAreaContainer = _ui.CrossPanel()
+    private val coordinateLabel = _ui.Label()
+    private val messageLabel = _ui.Label()
+    private val vScroll = _ui.ScrollBar(Orientation.VERTICAL, panel)
+    private val hScroll = _ui.ScrollBar(Orientation.HORIZONTAL, panel)
     private val zoomPanel = SwPanel { g ->
         val view = currentView
         when {
@@ -71,7 +69,7 @@ class MapSection (
         vScroll.scrollWidth = 50
         hScroll.scrollWidth = 50
 
-        val glWorkArea = JoglMapAreaPanel(penner, this)
+        val glWorkArea = JoglMapAreaPanel(penner, this, _master)
         workAreaContainer.setLayout { rows.add(glWorkArea) }
 
         hScroll.scrollBind.addObserver { new, _ -> currentView.offsetX = new * scrollRatio}
@@ -85,7 +83,10 @@ class MapSection (
         }
 
         workAreaContainer.onResize += {calibrateScrolls()}
-        Hybrid.timing.createTimer(15, true) {Hybrid.gle.runInGLContext { penner.step() }}
+
+        Hybrid.timing.createTimer(1000, false) {
+            Hybrid.timing.createTimer(15, true) { Hybrid.gle.runInGLContext { penner.step() } }
+        }
 
         coordinateLabel.text = "Coordinate Label"
         messageLabel.text = "Message Label"
@@ -165,7 +166,7 @@ class MapSection (
     }
 
     // ==== Bindings ====
-    private val _currentMapK = master.mapSpace.mapsBind.currentlySelectedBind.addObserver { new, old ->
+    private val _currentMapK = _master.mapSpace.mapsBind.currentlySelectedBind.addObserver { new, old ->
         val view = if( new == null) _defaultView else _viewMap[new] ?: makeDefaultView(new)
         //_viewObservable.trigger { it.invoke() }
 

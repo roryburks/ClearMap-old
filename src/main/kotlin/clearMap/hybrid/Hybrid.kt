@@ -43,7 +43,7 @@ object SwHybrid : IHybrid {
 
     override val ui: IComponentProvider get() = SwingComponentProvider
     override val timing: ITimerEngine get() = SwTimerEngine
-    override val gle: IGLEngine = EngineLaunchpoint.gle
+    override val gle: IGLEngine get() = EngineLaunchpoint.gle
     override val gl: IGL get() = JOGLProvider.gl
 //    override val imageCreator: IImageCreator get() = SwImageCreator
     override val imageConverter: AwtImageConverter get() = AwtImageConverter{EngineLaunchpoint.gle}
@@ -51,7 +51,7 @@ object SwHybrid : IHybrid {
 //    override val clipboard: IClipboard get() = SwClipboard
 
     override val mouseSystem: IMouseSystem get() = SwMouseSystem
-    override val keypressSystem: MKeypressSystem = KeypressSystem
+    override val keypressSystem: MKeypressSystem get() = KeypressSystem
 
 //    override fun LockFrom(o: Any): ILock = JLock(o)
     override fun beep() {
@@ -59,5 +59,5 @@ object SwHybrid : IHybrid {
     }
 
 
-    override val logger = ConsoleLogger
+    override val logger get() = ConsoleLogger
 }

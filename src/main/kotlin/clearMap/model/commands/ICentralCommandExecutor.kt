@@ -1,6 +1,9 @@
 package clearMap.model.commands
 
+import clearMap.hybrid.Hybrid
 import clearMap.model.IMasterModel
+import clearMap.ui.resources.ILogger
+import rb.extendo.extensions.toHashMap
 
 interface ICommand {
     val commandString : String
@@ -34,14 +37,37 @@ interface ICentralCommandExecutor {
     fun executeCommand( command: String, extra: Any?) : Boolean
 }
 
-class CentralCommandExecutor(val master: IMasterModel) : ICentralCommandExecutor{
-    override val commandDomains: List<String>
-        get() = TODO("not implemented")
-    override val validCommands: List<String>
-        get() = TODO("not implemented")
+class CentralCommandExecutor(
+    master: IMasterModel,
+    private val _logger: ILogger = Hybrid.logger
+)
+    : ICentralCommandExecutor {
+
+    private val commandExecutors: Map<String, ICommandExecutor> =
+        listOf<ICommandExecutor>(GlobalCommandExecutor(master))
+            .toHashMap { it.domain }
+
+    override val commandDomains: List<String> get() = commandExecutors.keys.toList()
+    override val validCommands: List<String> get() = commandExecutors.values.flatMap { it.validCommands }
 
     override fun executeCommand(command: String, extra: Any?): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+        var executed = false
+        Hybrid.gle.runInGLContext {
+            val space = command.substring(0, command.indexOf("."))
+            val subCommand = command.substring(space.length + 1)
 
+            var attempted = false
+
+            commandExecutors[space]?.run {
+                attempted = true
+                if (executeCommand(subCommand, extra))
+                    executed = true
+            }
+
+            if (!attempted) {
+                Hybrid.logger.logWarning("Unrecognized command domain: $space")
+            }
+        }
+        return executed
+    }
 }

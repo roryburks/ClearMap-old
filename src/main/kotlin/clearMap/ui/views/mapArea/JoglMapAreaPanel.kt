@@ -1,6 +1,7 @@
 package clearMap.ui.views.mapArea
 
 import clearMap.hybrid.Hybrid
+import clearMap.model.IMasterModel
 import clearMap.model.penner.IPenner
 import clearMap.model.penner.Penner
 import com.jogamp.opengl.GLAutoDrawable
@@ -24,12 +25,14 @@ class JoglMapAreaPanel
 private constructor(
     private val _penner: Penner,
     private val _context: MapSection,
+    private val _master: IMasterModel,
     private val _canvas: GLJPanel)
     :ISwComponent by SwComponent(_canvas)
 {
-    constructor(penner: Penner, context : MapSection) : this(
+    constructor(penner: Penner, context : MapSection, master: IMasterModel) : this(
         penner,
         context,
+        master,
         GLJPanel(GLCapabilities(GLProfile.getDefault())))
 
     init {
@@ -136,7 +139,7 @@ private constructor(
                 val gl = gle.gl
                 gl.viewport(0, 0, w, h)
 
-                MapAreaDrawer.drawMap(glgc, _context )
+                MapAreaDrawer.drawMap(glgc, _context, _master, width, height)
                 JOGLProvider.gl2 = null
             }
 
