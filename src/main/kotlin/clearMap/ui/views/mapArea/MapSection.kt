@@ -83,10 +83,7 @@ class MapSection (
         }
 
         workAreaContainer.onResize += {calibrateScrolls()}
-
-        Hybrid.timing.createTimer(1000, false) {
-            Hybrid.timing.createTimer(15, true) { Hybrid.gle.runInGLContext { penner.step() } }
-        }
+        Hybrid.timing.createTimer(15, true) {Hybrid.gle.runInGLContext { penner.step() }}
 
         coordinateLabel.text = "Coordinate Label"
         messageLabel.text = "Message Label"
@@ -151,7 +148,7 @@ class MapSection (
 
     private fun doPreservingMousePoint(point: Vec2f, lambda: () -> Unit) {
         val view = currentView
-        val pointInWorkspace = view.tScreenToView.apply(point) ?: Vec2f.Zero
+        val pointInWorkspace = view.tScreenToView.apply(point)
         lambda.invoke()
         hScroll.scroll = ((pointInWorkspace.xf * view.zoom - point.xf ) / scrollRatio).round
         vScroll.scroll = ((pointInWorkspace.yf * view.zoom - point.yf ) / scrollRatio).round

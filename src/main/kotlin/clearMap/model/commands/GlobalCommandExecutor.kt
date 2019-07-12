@@ -3,6 +3,8 @@ package clearMap.model.commands
 
 import clearMap.model.IMasterModel
 import clearMap.model.map.CwMap
+import clearMap.ui.dialog.NewMapDialog
+
 //import clearMap.ui.dialog.NewMapDialog
 
 class GlobalCommandExecutor( private val _master : IMasterModel) : ICommandExecutor{
@@ -37,11 +39,11 @@ internal constructor(
 
 object GlobalCommands {
     val NewMap = GlobalCommand("newMap") {
-//        val newMapResults = it.dialog
-//            .runDialog { master, ui -> NewMapDialog(ui) }
-//            ?: return@GlobalCommand
-//        val newMap = CwMap(newMapResults.width, newMapResults.height)
-//        it.mapSpace.mapsBind.list.add(newMap)
-//        it.mapSpace.mapsBind.currentlySelected = newMap
+        val newMapResults = it.dialog
+            .runDialog { master, ui -> NewMapDialog(ui) }
+            ?: return@GlobalCommand
+        val newMap = CwMap(newMapResults.width, newMapResults.height)
+        it.mapSpace.mapsBind.list.add(newMap)
+        it.mapSpace.mapsBind.currentlySelected = newMap
     }
 }

@@ -6,11 +6,14 @@ import clearMap.model.commands.ICentralCommandExecutor
 import clearMap.model.map.CwMapSpace
 import clearMap.model.map.ICwMapSpace
 import clearMap.model.view.ViewSchemaModel
+import clearMap.ui.dialog.Dialog
+import clearMap.ui.dialog.IDialog
 import clearMap.ui.resources.ILogger
 import clearMap.ui.systems.HotkeyManager
 import clearMap.ui.systems.IHotkeyManager
 import clearMap.ui.systems.IPreferences
 import clearMap.ui.systems.JPreferences
+import sgui.components.IComponentProvider
 
 interface  IMasterModel {
     val preferences: IPreferences
@@ -18,14 +21,18 @@ interface  IMasterModel {
     val commandExecutor: ICentralCommandExecutor
     val viewSchema : ViewSchemaModel
     val hotkeyManager : IHotkeyManager
-    //val dialog : IDialog
+    val dialog : IDialog
 }
 
 class MasterModel(
-) : IMasterModel{
+    logger: ILogger = Hybrid.logger,
+    ui: IComponentProvider = Hybrid.ui)
+    : IMasterModel
+{
     override val preferences = JPreferences(MasterModel::class.java)
     override val mapSpace: ICwMapSpace = CwMapSpace()
-    override val commandExecutor: ICentralCommandExecutor = CentralCommandExecutor(this)
+    override val commandExecutor: ICentralCommandExecutor = CentralCommandExecutor(this, logger)
     override val viewSchema: ViewSchemaModel = ViewSchemaModel()
     override val hotkeyManager : IHotkeyManager = HotkeyManager(preferences)
+    override val dialog: IDialog = Dialog(this, ui)
 }

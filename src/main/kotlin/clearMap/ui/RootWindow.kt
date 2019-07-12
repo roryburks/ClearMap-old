@@ -2,6 +2,8 @@ package clearMap.ui
 
 import clearMap.hybrid.Hybrid
 import clearMap.model.IMasterModel
+import clearMap.model.commands.GlobalCommand
+import clearMap.model.commands.GlobalCommands
 import clearMap.ui.systems.Hotkey
 import clearMap.ui.systems.MenuItem
 import clearMap.ui.systems.SwContextMenus
@@ -25,11 +27,14 @@ class RootWindow(val master: IMasterModel) : JFrame() {
     init {
         val scheme = listOf(
             MenuItem("&File"),
-            MenuItem(".New Map")
+            MenuItem(".New Map", GlobalCommands.NewMap)
         )
 
         val bar = SwMenuBar()
-        SwContextMenus(master.commandExecutor, Hybrid.gle, Hybrid.logger).constructMenu(bar, scheme)
+        SwContextMenus(
+            master.commandExecutor,
+            Hybrid.gle,
+            Hybrid.logger).constructMenu(bar, scheme)
         jMenuBar = bar
     }
 
