@@ -1,5 +1,7 @@
 package clearMap.ui.views.tools
 
+import rb.owl.IObservable
+import rb.owl.bindable.Bindable
 import rb.owl.bindable.addObserver
 import kotlin.reflect.KProperty
 
@@ -7,11 +9,22 @@ import kotlin.reflect.KProperty
 // Candidate for CwShared
 interface IToolsetManager
 {
+    val selectedToolBinding: Bindable<Tool>
+    var selectedTool: Tool
+
+    interface ToolsetPropertyObserver {
+        fun onToolPropertyChanged( tool: Tool, property: ToolProperty<*>)
+    }
+    val toolsetObservable : IObservable<ToolsetPropertyObserver>
+
+}
+interface MToolsetManager : IToolsetManager
+{
     fun triggerToolsetChanged(tool: Tool,  property: ToolProperty<*>)
 }
 
 
-abstract class Tool(private val _manager: IToolsetManager) {
+abstract class Tool(private val _manager: MToolsetManager) {
     abstract val description: String
     abstract val iconX: Int
     abstract val iconY: Int

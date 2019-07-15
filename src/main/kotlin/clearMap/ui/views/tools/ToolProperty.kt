@@ -24,4 +24,5 @@ class DropDownProperty<T>( override val hrName: String, default: T, val values: 
 class RadioButtonProperty<T>( override val hrName: String, default: T, val values: Array<T>) : ToolProperty<T>(default)
 class ButtonProperty(override val hrName: String, val command: ICommand) : ToolProperty<Boolean>(false)
 class FloatBoxProperty(override val hrName: String, default: Float) : ToolProperty<Float>(default)
+class DoubleBoxProperty(override val hrName: String, default: Double) : ToolProperty<Double>(default)
 class DualFloatBoxProperty(override val hrName: String, val label1: String, val label2: String, default: Vec2f) : ToolProperty<Vec2f>(default)
