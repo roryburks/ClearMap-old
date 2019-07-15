@@ -1,10 +1,13 @@
-package clearMap.model.penner
+package clearMap.model.penner.behaviors
 
+import clearMap.model.penner.Penner
+import clearMap.model.penner.ViewSpace
 import rb.glow.GraphicsContext
 import sgui.components.events.MouseEvent
 
 abstract class PennerBehavior(
-    val penner: Penner)
+    val penner: Penner
+)
 {
     abstract fun onStart()
     abstract fun onTock()

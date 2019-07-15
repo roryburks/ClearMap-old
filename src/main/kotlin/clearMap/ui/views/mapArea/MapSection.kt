@@ -35,7 +35,7 @@ class MapSection (
     override val icon: SwIcon? get() = null
     override val name: String get() = "Map"
 
-    val penner = Penner(_master, this)
+    val penner = Penner(_master, this, Hybrid.keypressSystem)
 
     val currentMap get() = _master.mapSpace.mapsBind.currentlySelected
     val currentView  get() = currentMap?.run { _viewMap[this]} ?: _defaultView

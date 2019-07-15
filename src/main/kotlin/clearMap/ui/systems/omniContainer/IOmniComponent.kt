@@ -1,5 +1,6 @@
 package clearMap.ui.systems.omniContainer
 
+// Candidate for CwShared
 import sgui.components.IComponent
 import sguiSwing.SwIcon
 

@@ -1,8 +1,10 @@
 package clearMap.ui.systems
 
+import clearMap.model.commands.GlobalCommands
 import clearMap.model.commands.KeyCommand
 import rb.extendo.dataStructures.MutableOneToManyMap
 import java.awt.event.InputEvent
+import java.awt.event.KeyEvent
 
 
 data class Hotkey(
@@ -23,7 +25,9 @@ private const val ALT = InputEvent.ALT_DOWN_MASK
 private const val CTRL = InputEvent.CTRL_DOWN_MASK
 private const val SHIFT = InputEvent.SHIFT_DOWN_MASK
 
-private val DefaultHotkeys = mapOf<KeyCommand,Hotkey>()
+private val DefaultHotkeys = mapOf(
+    GlobalCommands.NewMap.keyCommand to Hotkey(KeyEvent.VK_N, CTRL)
+)
 
 class HotkeyManager(
     val preferences: IPreferences,

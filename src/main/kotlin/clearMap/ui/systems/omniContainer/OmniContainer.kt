@@ -1,5 +1,6 @@
 package clearMap.ui.systems.omniContainer
 
+// Candidate for CwShared
 import clearMap.hybrid.Hybrid
 import sgui.Orientation.HORIZONTAL
 import sgui.Orientation.VERTICAL

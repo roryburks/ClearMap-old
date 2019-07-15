@@ -1,5 +1,6 @@
 package clearMap.ui.systems.omniContainer
 
+// Candidate for CwShared
 import sguiSwing.components.jcomponent
 import java.awt.Dialog.ModalityType.MODELESS
 import java.awt.event.WindowEvent

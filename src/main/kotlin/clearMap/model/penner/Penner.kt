@@ -2,12 +2,16 @@ package clearMap.model.penner
 
 import clearMap.model.IMasterModel
 import clearMap.model.map.CwMap
+import clearMap.model.penner.behaviors.DrawnPennerBehavior
+import clearMap.model.penner.behaviors.MovingViewBehavior
+import clearMap.model.penner.behaviors.PennerBehavior
 import clearMap.ui.views.mapArea.MapSection
 import rb.glow.GraphicsContext
 import rb.vectrix.linear.Vec2f
 import rb.vectrix.mathUtil.f
 import rb.vectrix.mathUtil.floor
 import sgui.components.events.MouseEvent
+import sgui.systems.IKeypressSystem
 
 interface IPenner{
     fun step()
@@ -26,8 +30,10 @@ interface IPenner{
 
 class Penner(
     val master: IMasterModel,
-    val context: MapSection) : IPenner
+    val context: MapSection,
+    private val _keypressSystem: IKeypressSystem) : IPenner
 {
+    val holdingSpace get() = _keypressSystem.holdingSpace
     var holdingShift = false
     var holdingAlt = false
     var holdingCtrl = false
@@ -113,6 +119,8 @@ class Penner(
     }
 
     private fun setBehavior(button: MouseEvent.MouseButton, map: CwMap) : PennerBehavior? {
+        if( holdingSpace) return MovingViewBehavior(this, context.currentView)
+
         return null
     }
 }

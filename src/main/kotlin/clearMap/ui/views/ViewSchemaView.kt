@@ -1,4 +1,4 @@
-package clearMap.ui.views.mapArea
+package clearMap.ui.views
 
 import clearMap.model.IMasterModel
 import clearMap.ui.resources.SpiriteIcons

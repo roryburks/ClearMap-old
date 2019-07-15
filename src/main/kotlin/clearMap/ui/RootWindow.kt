@@ -2,7 +2,6 @@ package clearMap.ui
 
 import clearMap.hybrid.Hybrid
 import clearMap.model.IMasterModel
-import clearMap.model.commands.GlobalCommand
 import clearMap.model.commands.GlobalCommands
 import clearMap.ui.systems.Hotkey
 import clearMap.ui.systems.MenuItem
@@ -10,8 +9,7 @@ import clearMap.ui.systems.SwContextMenus
 import clearMap.ui.systems.omniContainer.OmniContainer
 import clearMap.ui.systems.omniContainer.OmniSegment
 import clearMap.ui.views.mapArea.MapSection
-import clearMap.ui.views.mapArea.ViewSchemaView
-import sgui.Orientation
+import clearMap.ui.views.ViewSchemaView
 import sgui.systems.KeypressSystem
 import sguiSwing.components.SwMenuBar
 import sguiSwing.components.jcomponent
