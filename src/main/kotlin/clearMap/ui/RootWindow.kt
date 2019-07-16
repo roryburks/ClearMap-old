@@ -8,8 +8,10 @@ import clearMap.ui.systems.MenuItem
 import clearMap.ui.systems.SwContextMenus
 import clearMap.ui.systems.omniContainer.OmniContainer
 import clearMap.ui.systems.omniContainer.OmniSegment
+import clearMap.ui.systems.omniContainer.SubContainer
 import clearMap.ui.views.mapArea.MapSection
 import clearMap.ui.views.ViewSchemaView
+import clearMap.ui.views.tools.ToolPanel
 import sgui.systems.KeypressSystem
 import sguiSwing.components.SwMenuBar
 import sguiSwing.components.jcomponent
@@ -37,8 +39,11 @@ class RootWindow(val master: IMasterModel) : JFrame() {
     }
 
     private val _omni = OmniContainer {
-        right += OmniSegment(ViewSchemaView(master, Hybrid.ui), 150, 150)
-        center = OmniSegment(MapSection(master, Hybrid.ui), 200, 200)
+        center = SubContainer(200, 400) {
+            right += OmniSegment(ViewSchemaView(master, Hybrid.ui), 150, 150)
+            center = OmniSegment(MapSection(master, Hybrid.ui), 200, 200)
+        }
+        bottom += OmniSegment(ToolPanel(master, Hybrid.ui), 100, 100)
     }
 
 
