@@ -125,9 +125,17 @@ class ColPolygonBuilder(val map: CwMap) {
                     sx = snap?.xi ?: x
                     sy = snap?.yi ?: y
                 }
-                shift -> when {
-                    Math.abs(x - startX) > Math.abs(y - startY) -> {sx = x; sy = startY}
-                    else -> {sx = startX; sy = y}
+                shift -> {
+                    sy = when {
+                        abs(y - (points.getOrNull(i-1)?.yi ?: 0)) < thresh -> points[i-1].yi
+                        abs(y - (points.getOrNull(i+1)?.yi ?: 0)) < thresh -> points[i+1].yi
+                        else -> y
+                    }
+                    sx = when {
+                        abs(x - (points.getOrNull(i-1)?.xi ?: 0)) < thresh -> points[i-1].xi
+                        abs(x - (points.getOrNull(i+1)?.xi ?: 0)) < thresh -> points[i+1].xi
+                        else -> x
+                    }
                 }
                 else -> {sx = x; sy = y}
             }
@@ -174,12 +182,12 @@ class ColPolygonBuilder(val map: CwMap) {
                 }
                 shift -> when {
                     Math.abs(x - startMouseX) > Math.abs(y - startMouseY) -> {
-                        sx = startMouseX
+                        sx = startLeftX
                         sy = y - startMouseY + startLeftY
                     }
                     else -> {
                         sx = x - startMouseX + startLeftX
-                        sy = startMouseY
+                        sy = startLeftY
                     }
                 }
                 else -> {

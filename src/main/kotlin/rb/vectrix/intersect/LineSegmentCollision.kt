@@ -3,6 +3,7 @@ package rb.vectrix.intersect
 import rb.vectrix.mathUtil.MathUtil
 import rb.vectrix.shapes.*
 import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
 
@@ -31,7 +32,11 @@ fun LineSegment.distanceFromPoint(x: Double, y:Double) : Double {
 
 
         if (rx1 == rx2) {
-            return (y - ry1) / (ry2 - ry1)
+            return when {
+                y < min(y1,y2) -> null
+                y > max(y1,y2) -> null
+                else -> abs(x - x1)
+            }
         }
 
         // http://mathworld.wolfram.com/Circle-LineIntersection.html
