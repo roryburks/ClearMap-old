@@ -1,11 +1,21 @@
 package clearMap.model.tools.collisionObjectBuilding
 
+import clearMap.model.map.CwMap
+import rb.extendo.extensions.minByWith
 import rb.glow.GraphicsContext
 import rb.glow.color.Colors
+import rb.vectrix.intersect.CollisionLineSegment
+import rb.vectrix.intersect.distanceFromPoint
 import rb.vectrix.linear.Vec2i
+import rb.vectrix.mathUtil.MathUtil
+import rb.vectrix.mathUtil.d
 import rb.vectrix.mathUtil.f
+import rb.vectrix.mathUtil.round
+import rb.vectrix.shapes.LineSegment
+import rb.vectrix.shapes.LineSegmentI
+import sgui.components.events.MouseEvent
 
-class ColPolygonBuilder {
+class ColPolygonBuilder(val map: CwMap) {
     val points = mutableListOf<Vec2i>()
     var thresh = 5.0
 
@@ -17,13 +27,61 @@ class ColPolygonBuilder {
             points.size)
     }
 
+    fun handleRelease(x: Int, y: Int) {
+        state = null
+    }
+    fun handlePress(x: Int, y: Int, button: MouseEvent.MouseButton) {
+        when(val prop = determineProposition(x,y)) {
+            is ProposingMoveLineState -> when( button) {
+                MouseEvent.MouseButton.RIGHT -> points.removeAt(prop.i)
+                else -> state = MovingPointState(prop.i)
+            }
+            is ProposingMovePointState -> when (button) {
+                MouseEvent.MouseButton.RIGHT -> {
+                    points.add(prop.i+1, Vec2i(x,y))
+                    state = MovingPointState(prop.i)
+                }
+                else -> state = MovingLineState(prop.i, x, y)
+            }
+        }
+    }
+    fun handleMove(x: Int, y: Int, shift: Boolean, ctrl: Boolean) {
+        state?.onMove(x, y, shift, ctrl)
 
-    fun getClipPoint(x: Int, y: Int, thresh: Double = this.thresh) : Vec2i? {
-        // TODO
+        if( state == null) {
+            state = determineProposition(x,y)
+        }
+    }
+
+    private fun getClipPoint(x: Int, y: Int, thresh: Double = this.thresh) : Vec2i? {
+        val closest = map.getSnappablePoints()
+            .minBy { MathUtil.distance(x.d, y.d, it.x, it.y) }
+            ?: return null
+
+        if( MathUtil.distance(x.d, y.d, closest.x, closest.y) < thresh) {
+            return Vec2i(closest.x.round, closest.y.round)
+        }
+
         return null
     }
 
-    private val state: State? = null
+    private fun determineProposition(x: Int, y: Int) : State? {
+        val (closestPoint, pointDist) = (0 until points.size)
+            .minByWith { MathUtil.distance(x.d, y.d, points[it].x, points[it].y) }
+        val (closestLineSegmanet, lineDist) = (0 until points.size-1).asSequence()
+            .minByWith { LineSegmentI(points[it].xi, points[it].yi, points[it+1].xi, points[it+1].yi ).distanceFromPoint(x.d, y.d) }
+
+        return when {
+            pointDist != null && (lineDist == null || pointDist < lineDist) -> when {
+                pointDist < thresh -> closestPoint?.run { ProposingMovePointState(this)}
+                else -> null
+            }
+            lineDist != null && lineDist < thresh -> closestLineSegmanet?.run { ProposingMoveLineState(closestLineSegmanet)}
+            else -> null
+        }
+    }
+
+    private var state: State? = null
 
     private interface State {
         abstract fun draw(gc: GraphicsContext)
@@ -56,7 +114,7 @@ class ColPolygonBuilder {
         }
     }
 
-    inner class MovingLine(val iLeft: Int, val startMouseX: Int, val startMouseY: Int) : State {
+    inner class MovingLineState(val iLeft: Int, val startMouseX: Int, val startMouseY: Int) : State {
         val startLeftX: Int = points[iLeft].xi
         val startLeftY: Int = points[iLeft].yi
         val deltaX = points[iLeft+1].xi - startLeftX
@@ -112,5 +170,25 @@ class ColPolygonBuilder {
             points[iLeft+1] = Vec2i(sx+deltaX, sy+deltaY)
         }
 
+    }
+
+    inner class ProposingMovePointState(val i: Int) : State {
+        override fun draw(gc: GraphicsContext) {
+            gc.color = Colors.YELLOW
+            gc.drawOval(points[i].xi - 3, points[i].yi - 3, 6, 6)
+        }
+        override fun onMove(x: Int, y: Int, shift: Boolean, ctrl: Boolean) {
+            state = null
+        }
+    }
+
+    inner class ProposingMoveLineState(val i: Int) : State {
+        override fun draw(gc: GraphicsContext) {
+            gc.color = Colors.YELLOW
+            gc.drawLine(points[i].xi, points[i].yi, points[i+1].xi, points[i+1].yi)
+        }
+        override fun onMove(x: Int, y: Int, shift: Boolean, ctrl: Boolean) {
+            state = null
+        }
     }
 }

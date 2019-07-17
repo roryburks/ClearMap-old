@@ -18,8 +18,27 @@ infix fun LineSegment.intersectsPrecise(obj: CollisionObject) : Double? = when(o
     is CollisionMultiObj -> obj.objs.asSequence().mapNotNull { this intersectsPrecise it }.min()
 }
 
+
+fun LineSegment.distanceFromPoint(x: Double, y:Double) : Double {
+
+    val rx1 = left - x
+    val rx2 = right - x
+    val ry1 = bottom - y
+    val ry2 = top - y
+
+
+    if( rx1 == rx2) {
+        return (y-ry1)/(ry2-ry1)
+    }
+
+    val D = rx1*ry2 - rx2*ry1
+
+    return D
+}
+
 object LineSegmentCollision {
     private const val Error = 0.0001f
+
 
     fun withPoint(line: LineSegment, x: Double, y: Double) : Double? {
         return when {
