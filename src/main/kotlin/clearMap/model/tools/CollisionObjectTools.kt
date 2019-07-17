@@ -10,6 +10,7 @@ class CollisionObjectToolsModel  : MToolsetManager {
 
     val Circle = ColCircleTool(this)
     val LineSegment = ColLineSegmentTool(this)
+    val Poly = ColPolyTool(this)
 
     override val selectedToolBinding = Bindable<Tool>(Circle)
     override var selectedTool by selectedToolBinding
@@ -19,7 +20,7 @@ class CollisionObjectToolsModel  : MToolsetManager {
     }
 
     val tools = listOf(
-        Circle, LineSegment)
+        Circle, LineSegment, Poly)
 
 
 
@@ -54,4 +55,16 @@ class ColLineSegmentTool(manager: MToolsetManager) : Tool(manager)
     var x2 by x2Bind
     val y2Bind by scheme.Property(DoubleBoxProperty("y2", 0.0))
     var y2 by y2Bind
+}
+
+class ColPolyTool(manager: MToolsetManager) : Tool(manager)
+{
+    override val description: String get() = "Polygon"
+    override val iconX: Int get() = 0
+    override val iconY: Int get() = 0
+
+    val x1Bind by scheme.Property(DoubleBoxProperty("x1", 0.0))
+    var x1 by x1Bind
+    val y1Bind by scheme.Property(DoubleBoxProperty("y1", 0.0))
+    var y1 by y1Bind
 }

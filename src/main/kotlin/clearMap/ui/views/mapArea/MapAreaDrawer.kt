@@ -7,9 +7,7 @@ import rb.extendo.extensions.step
 import rb.glow.GraphicsContext
 import rb.glow.IGraphicsContext
 import rb.glow.color.Colors
-import rb.vectrix.linear.Vec2
-import rb.vectrix.linear.Vec2f
-import rb.vectrix.linear.Vec2i
+import rb.vectrix.linear.*
 import rb.vectrix.mathUtil.MathUtil
 import rb.vectrix.mathUtil.f
 import rb.vectrix.shapes.RectI
@@ -58,7 +56,12 @@ object MapAreaDrawer  {
 
         }
         if( schema.gridVis) {
+            gc.transform = view.tViewToScreen
             drawGrid(gc, RectI(0,0,width, height), view, schema.gridX, schema.gridY)
+        }
+        if( context.penner.drawsOverlay) {
+            gc.transform = view.tViewToScreen
+            context.penner.drawOverlay(gc, view)
         }
     }
 }

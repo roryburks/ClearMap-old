@@ -5,6 +5,8 @@ import clearMap.model.map.CwMap
 import clearMap.model.penner.behaviors.DrawnPennerBehavior
 import clearMap.model.penner.behaviors.MovingViewBehavior
 import clearMap.model.penner.behaviors.PennerBehavior
+import clearMap.model.penner.behaviors.PolygonComposingBehavior
+import clearMap.model.tools.ColPolyTool
 import clearMap.ui.views.mapArea.MapSection
 import rb.glow.GraphicsContext
 import rb.vectrix.linear.Vec2f
@@ -121,6 +123,11 @@ class Penner(
     private fun setBehavior(button: MouseEvent.MouseButton, map: CwMap) : PennerBehavior? {
         if( holdingSpace) return MovingViewBehavior(this, context.currentView)
 
-        return null
+        val currentTool = master.tools.collision.selectedTool
+
+        return when {
+            currentTool is ColPolyTool -> PolygonComposingBehavior(this, map)
+            else -> null
+        }
     }
 }

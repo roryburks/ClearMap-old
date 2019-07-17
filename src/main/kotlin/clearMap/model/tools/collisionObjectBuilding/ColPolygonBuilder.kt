@@ -2,6 +2,7 @@ package clearMap.model.tools.collisionObjectBuilding
 
 import clearMap.model.map.CwMap
 import rb.extendo.extensions.minByWith
+import rb.extendo.extensions.then
 import rb.glow.GraphicsContext
 import rb.glow.color.Colors
 import rb.vectrix.intersect.CollisionLineSegment
@@ -21,10 +22,23 @@ class ColPolygonBuilder(val map: CwMap) {
 
     fun draw(gc: GraphicsContext) {
         gc.color = Colors.BLACK
-        gc.drawPolyLine(
-            points.map { it.x.f }.toFloatArray(),
-            points.map { it.y.f }.toFloatArray(),
-            points.size)
+        val xs = FloatArray(points.size + 1)
+        val ys = FloatArray(points.size + 1)
+
+        points.forEachIndexed { index, vec2i ->
+            xs[index] = vec2i.xi.f
+            ys[index] = vec2i.yi.f
+        }
+        xs[points.size] = points.firstOrNull()?.xi?.f ?: 0f
+        ys[points.size] = points.firstOrNull()?.yi?.f ?: 0f
+
+        gc.drawPolyLine(xs, ys, xs.size)
+    }
+
+    fun doStart(x: Int, y:Int) {
+        points.add(Vec2i(x,y))
+        points.add(Vec2i(x,y))
+        state = MovingPointState(points.size-1)
     }
 
     fun handleRelease(x: Int, y: Int) {
@@ -42,6 +56,10 @@ class ColPolygonBuilder(val map: CwMap) {
                     state = MovingPointState(prop.i)
                 }
                 else -> state = MovingLineState(prop.i, x, y)
+            }
+            null -> {
+                points.add(Vec2i(x, y))
+                state = MovingPointState(points.size-1)
             }
         }
     }
