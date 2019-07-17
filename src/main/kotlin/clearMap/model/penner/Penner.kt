@@ -79,7 +79,10 @@ class Penner(
         val map = context.currentMap ?: return
 
         if( behavior != null) behavior?.onPenDown(button)
-        else behavior = setBehavior(button, map)
+        else {
+            behavior = setBehavior(button, map)
+            behavior?.onStart()
+        }
     }
 
     override fun penUp(button: MouseEvent.MouseButton) {

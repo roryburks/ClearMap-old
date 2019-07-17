@@ -15,6 +15,7 @@ import rb.vectrix.mathUtil.round
 import rb.vectrix.shapes.LineSegment
 import rb.vectrix.shapes.LineSegmentI
 import sgui.components.events.MouseEvent
+import kotlin.math.abs
 
 class ColPolygonBuilder(val map: CwMap) {
     val points = mutableListOf<Vec2i>()
@@ -33,6 +34,8 @@ class ColPolygonBuilder(val map: CwMap) {
         ys[points.size] = points.firstOrNull()?.yi?.f ?: 0f
 
         gc.drawPolyLine(xs, ys, xs.size)
+
+        state?.draw(gc)
     }
 
     fun doStart(x: Int, y:Int) {
@@ -46,14 +49,14 @@ class ColPolygonBuilder(val map: CwMap) {
     }
     fun handlePress(x: Int, y: Int, button: MouseEvent.MouseButton) {
         when(val prop = determineProposition(x,y)) {
-            is ProposingMoveLineState -> when( button) {
+            is ProposingMovePointState -> when( button) {
                 MouseEvent.MouseButton.RIGHT -> points.removeAt(prop.i)
                 else -> state = MovingPointState(prop.i)
             }
-            is ProposingMovePointState -> when (button) {
+            is ProposingMoveLineState -> when (button) {
                 MouseEvent.MouseButton.RIGHT -> {
                     points.add(prop.i+1, Vec2i(x,y))
-                    state = MovingPointState(prop.i)
+                    state = MovingPointState(prop.i+1)
                 }
                 else -> state = MovingLineState(prop.i, x, y)
             }
@@ -86,17 +89,18 @@ class ColPolygonBuilder(val map: CwMap) {
     private fun determineProposition(x: Int, y: Int) : State? {
         val (closestPoint, pointDist) = (0 until points.size)
             .minByWith { MathUtil.distance(x.d, y.d, points[it].x, points[it].y) }
-        val (closestLineSegmanet, lineDist) = (0 until points.size-1).asSequence()
-            .minByWith { LineSegmentI(points[it].xi, points[it].yi, points[it+1].xi, points[it+1].yi ).distanceFromPoint(x.d, y.d) }
+        if( closestPoint != null && pointDist != null && pointDist <= thresh)
+            return ProposingMovePointState(closestPoint)
 
-        return when {
-            pointDist != null && (lineDist == null || pointDist < lineDist) -> when {
-                pointDist < thresh -> closestPoint?.run { ProposingMovePointState(this)}
-                else -> null
-            }
-            lineDist != null && lineDist < thresh -> closestLineSegmanet?.run { ProposingMoveLineState(closestLineSegmanet)}
-            else -> null
-        }
+        val (closestLineSegmanet, lineDist) = (0 until points.size-1).asSequence()
+            .minByWith { abs(LineSegmentI(points[it].xi, -points[it].yi, points[it+1].xi, -points[it+1].yi ).distanceFromPoint(x.d, -y.d)) }
+
+        println(lineDist)
+
+        if(closestLineSegmanet != null && lineDist != null)
+            return if( lineDist > thresh) null else ProposingMoveLineState(closestLineSegmanet)
+
+        return null
     }
 
     private var state: State? = null

@@ -3,6 +3,7 @@ package rb.vectrix.intersect
 import rb.vectrix.mathUtil.MathUtil
 import rb.vectrix.shapes.*
 import kotlin.math.abs
+import kotlin.math.min
 import kotlin.math.sqrt
 
 
@@ -20,20 +21,41 @@ infix fun LineSegment.intersectsPrecise(obj: CollisionObject) : Double? = when(o
 
 
 fun LineSegment.distanceFromPoint(x: Double, y:Double) : Double {
+    fun sub() : Double? {
+        val distStart = MathUtil.distance(x, y, x1, y1)
 
-    val rx1 = left - x
-    val rx2 = right - x
-    val ry1 = bottom - y
-    val ry2 = top - y
+        val rx1 = left - x
+        val rx2 = right - x
+        val ry1 = bottom - y
+        val ry2 = top - y
 
 
-    if( rx1 == rx2) {
-        return (y-ry1)/(ry2-ry1)
+        if (rx1 == rx2) {
+            return (y - ry1) / (ry2 - ry1)
+        }
+
+        // http://mathworld.wolfram.com/Circle-LineIntersection.html
+
+        val dx = rx2 - rx1
+        val dy = ry2 - ry1
+        val dr = MathUtil.distance(rx1, ry1, rx2, ry2)
+        val D = rx1 * ry2 - rx2 * ry1
+        val disc = dr * dr - D * D
+        if (disc < 0) return null
+        //if(disc == 0f) return ((D*dy/(dr*dr))- rx1) / (rx2-rx1)
+
+        val sqrtDisc = sqrt(disc)
+
+        val cx1 = (D * dy + dx * sqrtDisc) / (dr * dr)
+        val cx2 = (D * dy - dx * sqrtDisc) / (dr * dr)
+
+        val f1 = if (cx1 in rx1..rx2) (cx1 - rx1) / (rx2 - rx1) else null
+        val f2 = if (cx2 in rx1..rx2) (cx2 - rx1) / (rx2 - rx1) else null
+
+        return MathUtil.minOrNull(f1, f2)
     }
 
-    val D = rx1*ry2 - rx2*ry1
-
-    return D
+    return sub() ?: min(MathUtil.distance(x, y, x1, y1), MathUtil.distance( x, y, x2, y2))
 }
 
 object LineSegmentCollision {
