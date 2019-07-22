@@ -2,18 +2,15 @@ package clearMap.model.tools.collisionObjectBuilding
 
 import clearMap.model.map.CwMap
 import rb.extendo.extensions.minByWith
-import rb.extendo.extensions.then
 import rb.glow.GraphicsContext
 import rb.glow.LineAttributes
 import rb.glow.color.Colors
-import rb.vectrix.intersect.CollisionLineSegment
 import rb.vectrix.intersect.distanceFromPoint
 import rb.vectrix.linear.Vec2i
 import rb.vectrix.mathUtil.MathUtil
 import rb.vectrix.mathUtil.d
 import rb.vectrix.mathUtil.f
 import rb.vectrix.mathUtil.round
-import rb.vectrix.shapes.LineSegment
 import rb.vectrix.shapes.LineSegmentI
 import sgui.components.events.MouseEvent
 import kotlin.math.abs
@@ -89,18 +86,15 @@ class ColPolygonBuilder(val map: CwMap) {
     }
 
     private fun determineProposition(x: Int, y: Int) : State? {
-        val (closestPoint, pointDist) = (0 until points.size)
+        val closestPointSet = (0 until points.size)
             .minByWith { MathUtil.distance(x.d, y.d, points[it].x, points[it].y) }
-        if( closestPoint != null && pointDist != null && pointDist <= thresh)
-            return ProposingMovePointState(closestPoint)
+        if( closestPointSet != null && closestPointSet.second <= thresh)
+            return ProposingMovePointState(closestPointSet.first)
 
-        val (closestLineSegmanet, lineDist) = (0 until points.size-1).asSequence()
+        val closestLineSet = (0 until points.size-1).asSequence()
             .minByWith { abs(LineSegmentI(points[it].xi, -points[it].yi, points[it+1].xi, -points[it+1].yi ).distanceFromPoint(x.d, -y.d)) }
-
-        println(lineDist)
-
-        if(closestLineSegmanet != null && lineDist != null)
-            return if( lineDist > thresh) null else ProposingMoveLineState(closestLineSegmanet)
+        if(closestLineSet != null && closestLineSet.second <= thresh)
+            return ProposingMoveLineState(closestLineSet.first)
 
         return null
     }

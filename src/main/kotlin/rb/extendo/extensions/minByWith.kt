@@ -1,9 +1,9 @@
 package rb.extendo.extensions
 
 
-public inline fun <T, R : Comparable<R>> Iterable<T>.minByWith(selector: (T) -> R): Pair<T?,R?> {
+inline fun <T, R : Comparable<R>> Iterable<T>.minByWith(selector: (T) -> R): Pair<T,R>? {
     val iterator = iterator()
-    if (!iterator.hasNext()) return Pair(null,null)
+    if (!iterator.hasNext()) return null
     var minElem = iterator.next()
     var minValue = selector(minElem)
     while (iterator.hasNext()) {
@@ -16,9 +16,9 @@ public inline fun <T, R : Comparable<R>> Iterable<T>.minByWith(selector: (T) -> 
     }
     return Pair(minElem,minValue)
 }
-public inline fun <T, R : Comparable<R>> Sequence<T>.minByWith(selector: (T) -> R): Pair<T?,R?> {
+inline fun <T, R : Comparable<R>> Sequence<T>.minByWith(selector: (T) -> R): Pair<T,R>? {
     val iterator = iterator()
-    if (!iterator.hasNext()) return Pair(null,null)
+    if (!iterator.hasNext()) return null
     var minElem = iterator.next()
     var minValue = selector(minElem)
     while (iterator.hasNext()) {
