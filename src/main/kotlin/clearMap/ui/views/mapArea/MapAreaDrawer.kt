@@ -2,6 +2,7 @@ package clearMap.ui.views.mapArea
 
 import clearMap.gl.SpecialDrawerFactory
 import clearMap.model.IMasterModel
+import clearMap.model.etc.draw
 import clearMap.model.penner.ViewSpace
 import rb.extendo.extensions.step
 import rb.glow.GraphicsContext
@@ -48,12 +49,16 @@ object MapAreaDrawer  {
         val schema = master.viewSchema
 
         if( map != null) {
+            gc.pushState()
             gc.transform = view.tViewToScreen
 
             val drawer = SpecialDrawerFactory.makeSpecialDrawer(gc)
             drawer.drawTransparencyBg(0,0,map.width, map.height, 8)
 
+            gc.color = Colors.RED
+            map.collisionSpace.collisionObjects.forEach { it.draw(gc) }
 
+            gc.popState()
         }
         if( schema.gridVis) {
             gc.transform = view.tViewToScreen

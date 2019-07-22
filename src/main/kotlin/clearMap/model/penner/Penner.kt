@@ -9,6 +9,7 @@ import clearMap.model.penner.behaviors.PolygonComposingBehavior
 import clearMap.model.tools.ColPolyTool
 import clearMap.ui.views.mapArea.MapSection
 import rb.glow.GraphicsContext
+import rb.owl.bindable.addObserver
 import rb.vectrix.linear.Vec2f
 import rb.vectrix.mathUtil.f
 import rb.vectrix.mathUtil.floor
@@ -132,5 +133,9 @@ class Penner(
             currentTool is ColPolyTool -> PolygonComposingBehavior(this, map)
             else -> null
         }
+    }
+
+    private val onToolChangeK = master.tools.collision.selectedToolBinding.addObserver { _, _ ->
+        behavior?.end()
     }
 }

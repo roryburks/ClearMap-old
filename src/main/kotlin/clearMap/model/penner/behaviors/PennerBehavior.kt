@@ -21,6 +21,7 @@ abstract class PennerBehavior(
 
     fun end() {
         // This effectively ends the state behavior
+        penner.behavior?.onEnd()
         penner.behavior = null
     }
 }

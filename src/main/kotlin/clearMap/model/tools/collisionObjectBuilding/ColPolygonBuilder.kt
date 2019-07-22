@@ -4,6 +4,7 @@ import clearMap.model.map.CwMap
 import rb.extendo.extensions.minByWith
 import rb.extendo.extensions.then
 import rb.glow.GraphicsContext
+import rb.glow.LineAttributes
 import rb.glow.color.Colors
 import rb.vectrix.intersect.CollisionLineSegment
 import rb.vectrix.intersect.distanceFromPoint
@@ -19,7 +20,7 @@ import kotlin.math.abs
 
 class ColPolygonBuilder(val map: CwMap) {
     val points = mutableListOf<Vec2i>()
-    var thresh = 5.0
+    var thresh = 10.0
 
     fun draw(gc: GraphicsContext) {
         gc.color = Colors.BLACK
@@ -33,6 +34,7 @@ class ColPolygonBuilder(val map: CwMap) {
         xs[points.size] = points.firstOrNull()?.xi?.f ?: 0f
         ys[points.size] = points.firstOrNull()?.yi?.f ?: 0f
 
+        gc.lineAttributes = LineAttributes(2f)
         gc.drawPolyLine(xs, ys, xs.size)
 
         state?.draw(gc)
@@ -113,6 +115,10 @@ class ColPolygonBuilder(val map: CwMap) {
     inner class MovingPointState(val i: Int) : State {
         val startX = points[i].xi
         val startY = points[i].yi
+
+        val pointLeft get() = points.getOrNull(i-1)
+        val pointRight get() = points.getOrNull((i+1) % points.size)
+
         override fun draw(gc: GraphicsContext) {
             gc.fillOval(points[i].xi - 2, points[i].yi - 2, 4, 4)
         }
@@ -127,13 +133,13 @@ class ColPolygonBuilder(val map: CwMap) {
                 }
                 shift -> {
                     sy = when {
-                        abs(y - (points.getOrNull(i-1)?.yi ?: 0)) < thresh -> points[i-1].yi
-                        abs(y - (points.getOrNull(i+1)?.yi ?: 0)) < thresh -> points[i+1].yi
+                        abs(y - (pointLeft?.yi ?: 0)) < thresh -> pointLeft?.yi ?: y
+                        abs(y - (pointRight?.yi ?: 0)) < thresh -> pointRight?.yi ?: y
                         else -> y
                     }
                     sx = when {
-                        abs(x - (points.getOrNull(i-1)?.xi ?: 0)) < thresh -> points[i-1].xi
-                        abs(x - (points.getOrNull(i+1)?.xi ?: 0)) < thresh -> points[i+1].xi
+                        abs(x - (pointLeft?.xi ?: 0)) < thresh -> pointLeft?.xi ?: x
+                        abs(x - (pointRight?.xi ?: 0)) < thresh -> pointRight?.xi ?: x
                         else -> x
                     }
                 }
