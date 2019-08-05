@@ -1,12 +1,11 @@
 package clearMap.ui.views.mapArea
 
 import clearMap.gl.SpecialDrawerFactory
-import clearMap.model.IMasterModel
+import clearMap.model.master.IMasterModel
 import clearMap.model.etc.draw
 import clearMap.model.penner.ViewSpace
 import rb.extendo.extensions.step
 import rb.glow.GraphicsContext
-import rb.glow.IGraphicsContext
 import rb.glow.color.Colors
 import rb.vectrix.linear.*
 import rb.vectrix.mathUtil.MathUtil

@@ -1,13 +1,10 @@
 package clearMap.ui.views.tools
 
-import clearMap.hybrid.Hybrid
-import clearMap.model.IMasterModel
-import clearMap.ui.systems.omniContainer.IOmniComponent
+import clearMap.model.master.IMasterModel
 import rb.owl.bindable.addObserver
 import sgui.components.IBoxList
 import sgui.components.IComponent
 import sgui.components.IComponentProvider
-import sguiSwing.SwIcon
 
 private const val BUTTON_WIDTH = 24
 

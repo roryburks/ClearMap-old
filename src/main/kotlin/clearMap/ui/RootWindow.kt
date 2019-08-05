@@ -1,7 +1,7 @@
 package clearMap.ui
 
 import clearMap.hybrid.Hybrid
-import clearMap.model.IMasterModel
+import clearMap.model.master.IMasterModel
 import clearMap.model.commands.GlobalCommands
 import clearMap.ui.systems.Hotkey
 import clearMap.ui.systems.MenuItem
@@ -36,8 +36,10 @@ class RootWindow(
     init {
         val scheme = listOf(
             MenuItem("&File"),
-            MenuItem(".New Map", GlobalCommands.NewMap)
-        )
+            MenuItem(".&New Map", GlobalCommands.NewMap),
+            MenuItem(".&Import Tile", GlobalCommands.ImportTile)
+
+            )
 
         val bar = SwMenuBar()
         SwContextMenus(

@@ -1,7 +1,7 @@
 package clearMap.ui
 
 import clearMap.hybrid.Hybrid
-import clearMap.model.IMasterModel
+import clearMap.model.master.IMasterModel
 import javax.swing.WindowConstants
 
 interface IUIManager {

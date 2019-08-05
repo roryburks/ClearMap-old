@@ -1,6 +1,6 @@
 package clearMap.ui.views
 
-import clearMap.model.IMasterModel
+import clearMap.model.master.IMasterModel
 import clearMap.ui.resources.SpiriteIcons
 import clearMap.ui.systems.omniContainer.IOmniComponent
 import rb.IContract

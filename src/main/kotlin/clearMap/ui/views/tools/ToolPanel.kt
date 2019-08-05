@@ -1,6 +1,6 @@
 package clearMap.ui.views.tools
 
-import clearMap.model.IMasterModel
+import clearMap.model.master.IMasterModel
 import clearMap.ui.systems.omniContainer.IOmniComponent
 import sgui.components.IComponent
 import sgui.components.IComponentProvider

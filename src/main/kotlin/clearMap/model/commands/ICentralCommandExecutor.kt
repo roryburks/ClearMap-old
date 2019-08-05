@@ -1,7 +1,7 @@
 package clearMap.model.commands
 
 import clearMap.hybrid.Hybrid
-import clearMap.model.IMasterModel
+import clearMap.model.master.IMasterModel
 import clearMap.ui.resources.ILogger
 import rb.extendo.extensions.toHashMap
 

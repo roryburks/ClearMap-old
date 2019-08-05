@@ -1,7 +1,7 @@
 package clearMap.ui.views.mapArea
 
 import clearMap.hybrid.Hybrid
-import clearMap.model.IMasterModel
+import clearMap.model.master.IMasterModel
 import clearMap.model.map.CwMap
 import clearMap.model.penner.IPennerContext
 import clearMap.model.penner.MapPenner

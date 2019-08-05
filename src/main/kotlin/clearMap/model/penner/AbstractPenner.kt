@@ -1,14 +1,9 @@
 package clearMap.model.penner
 
-import clearMap.model.IMasterModel
-import clearMap.model.map.CwMap
+import clearMap.model.master.IMasterModel
 import clearMap.model.penner.behaviors.DrawnPennerBehavior
-import clearMap.model.penner.behaviors.MovingViewBehavior
 import clearMap.model.penner.behaviors.PennerBehavior
-import clearMap.model.penner.behaviors.PolygonComposingBehavior
-import clearMap.model.tools.ColPolyTool
 import rb.glow.GraphicsContext
-import rb.owl.bindable.addObserver
 import rb.vectrix.linear.Vec2f
 import rb.vectrix.mathUtil.f
 import rb.vectrix.mathUtil.floor

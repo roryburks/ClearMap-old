@@ -1,6 +1,5 @@
 package clearMap.ui.dialog
 
-import clearMap.model.IMasterModel
 import sgui.IIcon
 import sgui.components.IComponent
 

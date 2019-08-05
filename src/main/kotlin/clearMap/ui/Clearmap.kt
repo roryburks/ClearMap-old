@@ -1,7 +1,7 @@
 package clearMap.ui
 
-import clearMap.model.IMasterModel
-import clearMap.model.MasterModel
+import clearMap.model.master.IMasterModel
+import clearMap.model.master.MasterModel
 import clearMap.ui.resources.EngineLaunchpoint
 import clearMap.ui.resources.setupSwGuiStuff
 import rbJvm.glow.awt.RasterHelper

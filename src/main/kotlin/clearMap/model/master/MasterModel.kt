@@ -1,4 +1,4 @@
-package clearMap.model
+package clearMap.model.master
 
 import clearMap.hybrid.Hybrid
 import clearMap.model.commands.CentralCommandExecutor
@@ -15,6 +15,7 @@ import clearMap.ui.systems.IHotkeyManager
 import clearMap.ui.systems.IPreferences
 import clearMap.ui.systems.JPreferences
 import sgui.components.IComponentProvider
+
 
 interface  IMasterModel {
     val preferences: IPreferences

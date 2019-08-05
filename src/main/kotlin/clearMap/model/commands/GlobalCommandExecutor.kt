@@ -1,9 +1,14 @@
 package clearMap.model.commands
 
 
-import clearMap.model.IMasterModel
+import clearMap.hybrid.Hybrid
+import clearMap.model.master.IMasterModel
 import clearMap.model.map.CwMap
+import clearMap.model.map.CwTileModel
+import clearMap.ui.dialog.FileType
 import clearMap.ui.dialog.NewMapDialog
+import rbJvm.glow.awt.ImageBI
+import javax.imageio.ImageIO
 
 //import clearMap.ui.dialog.NewMapDialog
 
@@ -45,5 +50,13 @@ object GlobalCommands {
         val newMap = CwMap(newMapResults.width, newMapResults.height)
         it.mapSpace.mapsBind.list.add(newMap)
         it.mapSpace.mapsBind.currentlySelected = newMap
+    }
+
+    val ImportTile = GlobalCommand("importTile") {
+        val map = it.mapSpace.mapsBind.currentlySelected ?: return@GlobalCommand
+        val toImportFile = it.dialog.pickFile(FileType.ImportImage) ?: return@GlobalCommand
+        val img = ImageIO.read(toImportFile)
+        val internalImg = Hybrid.imageConverter.convertToInternal(ImageBI(img))
+        map.tiles.add(CwTileModel(internalImg, toImportFile.nameWithoutExtension))
     }
 }
