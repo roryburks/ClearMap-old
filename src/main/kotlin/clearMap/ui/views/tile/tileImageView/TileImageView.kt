@@ -2,6 +2,8 @@ package clearMap.ui.views.tile.tileImageView
 
 import clearMap.gl.SpecialDrawerFactory
 import clearMap.hybrid.Hybrid
+import clearMap.model.map.CwTilePolySegment
+import clearMap.model.map.CwTileRectSegment
 import clearMap.model.master.IMasterModel
 import clearMap.model.penner.IPennerContext
 import clearMap.model.penner.TilePenner
@@ -36,9 +38,31 @@ class TileImageView (
                 glgc.color = Colors.RED
 
                 glgc.transform = _view.tViewToScreen
-                _master.mapSpace.mapsBind.currentlySelected?.tilesBind?.currentlySelected?.run {
-                    glgc.renderImage(img, 0, 0)
-                    glgc.drawRect(0,0,img.width, img.height)
+
+                val map = _master.mapSpace.mapsBind.currentlySelected
+                val tile = map?.tilesBind?.currentlySelected
+                if( tile != null)
+                {
+                    glgc.renderImage(tile.img, 0, 0)
+                    glgc.drawRect(0,0,tile.img.width, tile.img.height)
+
+                    glgc.color = Colors.BLUE
+                    tile.tileSegments.forEach {
+                        when(it) {
+                            is CwTileRectSegment -> {
+                                glgc.drawRect(it.bounds.x1i,it.bounds.y1i, it.bounds.wi, it.bounds.hi)
+                            }
+                            is CwTilePolySegment -> {
+                                TODO()
+                            }
+                        }
+                    }
+                }
+
+
+                if( penner.drawsOverlay) {
+                    glgc.transform = view.tViewToScreen
+                    penner.drawOverlay(glgc, view)
                 }
             }
         }
