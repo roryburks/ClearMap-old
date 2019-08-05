@@ -8,6 +8,7 @@ import rb.glow.GraphicsContext
 import rb.vectrix.intersect.CollisionPolygon
 import rb.vectrix.shapes.PolygonD
 import sgui.components.events.MouseEvent
+import sgui.systems.KeypressCode
 
 class PolygonComposingBehavior (
     penner: Penner,
@@ -33,7 +34,10 @@ class PolygonComposingBehavior (
         builder.handlePress(penner.x, penner.y, button)
     }
 
-    override fun onTock() {}
+    override fun onTock() {
+        if(penner.pressingKeys.contains(KeypressCode.KC_ESC))
+            end()
+    }
 
     override fun onMove() {
         builder.handleMove(penner.x, penner.y, penner.holdingShift,penner.holdingCtrl)

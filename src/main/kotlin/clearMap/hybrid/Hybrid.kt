@@ -9,10 +9,7 @@ import rb.glow.gle.IImageConverter
 import rbJvm.glow.awt.AwtImageConverter
 import rbJvm.glow.jogl.JOGLProvider
 import sgui.components.IComponentProvider
-import sgui.systems.IKeypressSystem
-import sgui.systems.IMouseSystem
-import sgui.systems.KeypressSystem
-import sgui.systems.MKeypressSystem
+import sgui.systems.*
 import sguiSwing.SwingComponentProvider
 import sguiSwing.mouseSystem.SwMouseSystem
 

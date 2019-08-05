@@ -15,6 +15,7 @@ import rb.vectrix.mathUtil.f
 import rb.vectrix.mathUtil.floor
 import sgui.components.events.MouseEvent
 import sgui.systems.IKeypressSystem
+import sgui.systems.KeypressCode
 
 interface IPenner{
     fun step()
@@ -29,6 +30,8 @@ interface IPenner{
 
     val drawsOverlay : Boolean
     fun drawOverlay(gc: GraphicsContext, view: ViewSpace)
+
+    fun pressKey(code: KeypressCode)
 }
 
 class Penner(
@@ -57,6 +60,7 @@ class Penner(
     var pressure = 1.0f ; private set
 
     var behavior: PennerBehavior? = null
+    val pressingKeys = hashSetOf<KeypressCode>()
 
     override fun step() {
         if( oldX != x || oldY != y) {
@@ -72,6 +76,12 @@ class Penner(
         oldY = y
         oldRawX = rawX
         oldRawY = rawY
+
+        pressingKeys.clear()
+    }
+
+    override fun pressKey(code: KeypressCode) {
+        pressingKeys.add(code)
     }
 
     override fun penDown(button: MouseEvent.MouseButton) {

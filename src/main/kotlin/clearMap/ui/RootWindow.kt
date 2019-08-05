@@ -12,7 +12,9 @@ import clearMap.ui.systems.omniContainer.SubContainer
 import clearMap.ui.views.mapArea.MapSection
 import clearMap.ui.views.ViewSchemaView
 import clearMap.ui.views.tools.ToolPanel
+import sgui.components.IComponentProvider
 import sgui.systems.KeypressSystem
+import sguiSwing.SwKeycodeMapper
 import sguiSwing.components.SwMenuBar
 import sguiSwing.components.jcomponent
 import java.awt.Dimension
@@ -22,7 +24,9 @@ import java.awt.event.KeyEvent
 import javax.swing.JFrame
 import javax.swing.SwingUtilities
 
-class RootWindow(val master: IMasterModel) : JFrame() {
+class RootWindow(
+    private val _master: IMasterModel,
+    private val _ui: IComponentProvider) : JFrame() {
 
     init {
         val scheme = listOf(
@@ -32,18 +36,20 @@ class RootWindow(val master: IMasterModel) : JFrame() {
 
         val bar = SwMenuBar()
         SwContextMenus(
-            master.commandExecutor,
+            _master.commandExecutor,
             Hybrid.gle,
             Hybrid.logger).constructMenu(bar, scheme)
         jMenuBar = bar
     }
 
+    private val _mapSection = MapSection(_master, _ui)
+
     private val _omni = OmniContainer {
         center = SubContainer(200, 400) {
-            right += OmniSegment(ViewSchemaView(master, Hybrid.ui), 150, 150)
-            center = OmniSegment(MapSection(master, Hybrid.ui), 200, 200)
+            right += OmniSegment(ViewSchemaView(_master, _ui), 150, 150)
+            center = OmniSegment(_mapSection, 200, 200)
         }
-        bottom += OmniSegment(ToolPanel(master, Hybrid.ui), 100, 100)
+        bottom += OmniSegment(ToolPanel(_master, _ui), 100, 100)
     }
 
 
@@ -52,7 +58,7 @@ class RootWindow(val master: IMasterModel) : JFrame() {
 
         this.title = "Spirite"
 
-        val multiLevel = Hybrid.ui.CrossPanel {
+        val multiLevel = _ui.CrossPanel {
             // TODO: Fix with mouse input
 //            rows.addFlatGroup {
 //                add(topLevelView, flex = 1f)
@@ -83,8 +89,10 @@ class RootWindow(val master: IMasterModel) : JFrame() {
                         val key = evt.keyCode
                         val modifier = evt.modifiersEx
 
-                        val command = master.hotkeyManager.getCommand(Hotkey(key, modifier))
-                        command?.apply { master.commandExecutor.executeCommand(this.commandString, this.objectCreator?.invoke(master)) }
+                        val command = _master.hotkeyManager.getCommand(Hotkey(key, modifier))
+                        command?.apply { _master.commandExecutor.executeCommand(this.commandString, this.objectCreator?.invoke(_master)) }
+
+                        SwKeycodeMapper.map(evt.keyCode)?.run { _mapSection.penner.pressKey(this) }
                     }
                     KeyEvent.KEY_RELEASED -> {
                         if (evt.keyCode == KeyEvent.VK_SPACE)

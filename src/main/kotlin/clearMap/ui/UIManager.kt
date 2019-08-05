@@ -1,5 +1,6 @@
 package clearMap.ui
 
+import clearMap.hybrid.Hybrid
 import clearMap.model.IMasterModel
 import javax.swing.WindowConstants
 
@@ -10,7 +11,7 @@ interface IUIManager {
 
 class UIManager  : IUIManager {
     override fun init(model: IMasterModel) {
-        val root = RootWindow(model)
+        val root = RootWindow(model, Hybrid.ui)
         root.pack()
         root.isLocationByPlatform = true
         root.isVisible = true

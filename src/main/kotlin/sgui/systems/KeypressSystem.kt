@@ -1,5 +1,9 @@
 package sgui.systems
 
+enum class KeypressCode {
+    KC_ESC
+}
+
 interface IKeypressSystem
 {
     val holdingSpace: Boolean
