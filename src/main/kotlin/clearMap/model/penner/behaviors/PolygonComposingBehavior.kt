@@ -4,11 +4,8 @@ import clearMap.model.map.CwMap
 import clearMap.model.penner.Penner
 import clearMap.model.penner.ViewSpace
 import clearMap.model.tools.collisionObjectBuilding.ColPolygonBuilder
-import com.sun.javafx.geom.Vec2d
 import rb.glow.GraphicsContext
 import rb.vectrix.intersect.CollisionPolygon
-import rb.vectrix.linear.Vec2
-import rb.vectrix.linear.Vec2i
 import rb.vectrix.shapes.PolygonD
 import sgui.components.events.MouseEvent
 

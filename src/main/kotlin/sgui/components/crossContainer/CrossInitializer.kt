@@ -1,5 +1,6 @@
 package sgui.components.crossContainer
 
+import sgui.Orientation
 import sgui.Orientation.HORIZONTAL
 import sgui.Orientation.VERTICAL
 import sgui.components.IComponent

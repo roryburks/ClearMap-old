@@ -30,17 +30,11 @@ interface IGLEngine
 
 
     fun applyPassProgram(
-        programCall: IGlProgramCall,
-        params: GLParameters,
-        trans: ITransform?,
-        x1: Float, y1: Float, x2: Float, y2: Float,
-        u1: Float = 0f, v1: Float = 0f, u2: Float = 1f, v2: Float = 1f)
-
-    fun applyPassProgram(
-        programCall: IGlProgramCall,
-        params: GLParameters,
-        trans: ITransform?,
-        points: List<Vec2uv>)
+            programCall: IGlProgramCall,
+            params: GLParameters,
+            trans: ITransform?,
+            x1: Float, y1: Float, x2: Float, y2: Float,
+            u1: Float = 0f, v1: Float = 0f, u2: Float = 1f, v2: Float = 1f)
 
     fun applyComplexLineProgram(
             xPoints: List<Float>, yPoints: List<Float>, numPoints: Int,
@@ -145,47 +139,25 @@ class GLEngine(
     // region Exposed Rendering Methods
 
     override fun applyPassProgram(
-        programCall: IGlProgramCall,
-        params: GLParameters,
-        trans: ITransform?,
-        x1: Float, y1: Float, x2: Float, y2: Float,
-        u1: Float, v1: Float, u2: Float, v2: Float)
+            programCall: IGlProgramCall,
+            params: GLParameters,
+            trans: ITransform?,
+            x1: Float, y1: Float, x2: Float, y2: Float,
+            u1: Float, v1: Float, u2: Float, v2: Float)
     {
         val iParams = mutableListOf<GLUniform>()
         loadUniversalUniforms(params, iParams, trans)
 
         val preparedPrimitive = GLPrimitive(
-            floatArrayOf(
-                // x  y   u   v
-                x1, y1, u1, v1,
-                x2, y1, u2, v1,
-                x1, y2, u1, v2,
-                x2, y2, u2, v2
-            ), intArrayOf(2, 2), GLC.TRIANGLE_STRIP, intArrayOf(4)).prepare(gl)
+                floatArrayOf(
+                        // x  y   u   v
+                        x1, y1, u1, v1,
+                        x2, y1, u2, v1,
+                        x1, y2, u1, v2,
+                        x2, y2, u2, v2
+                ), intArrayOf(2, 2), GLC.TRIANGLE_STRIP, intArrayOf(4)).prepare(gl)
         applyProgram( programCall, params, iParams, preparedPrimitive)
         preparedPrimitive.flush()
-    }
-
-    override fun applyPassProgram(
-        programCall: IGlProgramCall,
-        params: GLParameters,
-        trans: ITransform?,
-        points: List<Vec2uv>)
-    {
-        TODO()
-//        val iParams = mutableListOf<GLUniform>()
-//        loadUniversalUniforms(params, iParams, trans)
-//
-//        val preparedPrimitive = GLPrimitive(
-//            floatArrayOf(
-//                // x  y   u   v
-//                x1, y1, u1, v1,
-//                x2, y1, u2, v1,
-//                x1, y2, u1, v2,
-//                x2, y2, u2, v2
-//            ), intArrayOf(2, 2), GLC.TRIANGLE_STRIP, intArrayOf(4)).prepare(gl)
-//        applyProgram( programCall, params, iParams, preparedPrimitive)
-//        preparedPrimitive.flush()
     }
 
     /**
