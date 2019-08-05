@@ -40,7 +40,7 @@ class HotkeyManager(
             val command = it.key
             val defaultHotkey = it.value
 
-            val preferenceString = preferences.getString(command.commandString, null)
+            val preferenceString = preferences.getString(command.commandString)
             if( preferenceString == null) {
                 hotkeyMap.assosciate(defaultHotkey, command)
             }
