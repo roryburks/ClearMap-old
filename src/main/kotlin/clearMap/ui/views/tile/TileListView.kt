@@ -47,6 +47,7 @@ class TileListView(
 
     }
 
+
     // Bindings
     val tileObs = object : IMutableListObserver<CwTileModel> {
         override val trigger = object: IListTriggers<CwTileModel> {
@@ -63,8 +64,14 @@ class TileListView(
     }
     var tilesK : IContract? =null
 
+    val selectedK = _listView.selectedBind.addObserver { new, old ->
+        if( new != null)
+            _master.mapSpace.mapsBind.currentlySelected?.tilesBind?.currentlySelected = new
+    }
+
     override fun close() {
         selectedMapK.void()
         tilesK?.void()
+        selectedK.void()
     }
 }

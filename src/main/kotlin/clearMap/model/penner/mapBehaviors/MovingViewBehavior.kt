@@ -1,8 +1,6 @@
-package clearMap.model.penner.behaviors
+package clearMap.model.penner.mapBehaviors
 
 import clearMap.model.penner.AbstractPenner
-import clearMap.model.penner.IPenner
-import clearMap.model.penner.MapPenner
 import clearMap.model.penner.ViewSpace
 
 class MovingViewBehavior(

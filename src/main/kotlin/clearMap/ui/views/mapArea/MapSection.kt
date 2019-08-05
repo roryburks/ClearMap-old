@@ -7,6 +7,7 @@ import clearMap.model.penner.IPennerContext
 import clearMap.model.penner.MapPenner
 import clearMap.model.penner.ViewSpace
 import clearMap.ui.systems.omniContainer.IOmniComponent
+import rb.glow.gle.GLGraphicsContext
 import rb.owl.bindable.addObserver
 import rb.vectrix.linear.Vec2f
 import rb.vectrix.mathUtil.f
@@ -70,7 +71,13 @@ class MapSection (
         vScroll.scrollWidth = 50
         hScroll.scrollWidth = 50
 
-        val glWorkArea = JoglMapAreaPanel(penner, this, _master)
+        val glWorkArea = JoglAreaPanel(
+            penner,
+            object : IJoglAreaPanelContext {
+                override fun draw(glgc: GLGraphicsContext, w: Int, h: Int) {
+                    MapAreaDrawer.drawMap(glgc, this@MapSection, _master, w, h)
+                }
+            })
         workAreaContainer.setLayout { rows.add(glWorkArea) }
 
         hScroll.scrollBind.addObserver { new, _ -> currentView.offsetX = new * scrollRatio}

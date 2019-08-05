@@ -2,6 +2,7 @@ package clearMap.ui.views.mapArea
 
 import clearMap.hybrid.Hybrid
 import clearMap.model.master.IMasterModel
+import clearMap.model.penner.AbstractPenner
 import clearMap.model.penner.MapPenner
 import com.jogamp.opengl.GLAutoDrawable
 import com.jogamp.opengl.GLCapabilities
@@ -20,18 +21,20 @@ import sguiSwing.components.SwComponent
 import java.awt.event.MouseAdapter
 import javax.swing.SwingUtilities
 
-class JoglMapAreaPanel
+interface IJoglAreaPanelContext {
+    fun draw(glgc: GLGraphicsContext, w: Int, h: Int)
+}
+
+class JoglAreaPanel
 private constructor(
-    private val _penner: MapPenner,
-    private val _context: MapSection,
-    private val _master: IMasterModel,
+    private val _penner: AbstractPenner,
+    private val _context: IJoglAreaPanelContext,
     private val _canvas: GLJPanel)
     :ISwComponent by SwComponent(_canvas)
 {
-    constructor(penner: MapPenner, context : MapSection, master: IMasterModel) : this(
+    constructor(penner: AbstractPenner, context : IJoglAreaPanelContext) : this(
         penner,
         context,
-        master,
         GLJPanel(GLCapabilities(GLProfile.getDefault())))
 
     init {
@@ -138,7 +141,7 @@ private constructor(
                 val gl = gle.gl
                 gl.viewport(0, 0, w, h)
 
-                MapAreaDrawer.drawMap(glgc, _context, _master, width, height)
+                _context.draw(glgc, w, h)
                 JOGLProvider.gl2 = null
             }
 

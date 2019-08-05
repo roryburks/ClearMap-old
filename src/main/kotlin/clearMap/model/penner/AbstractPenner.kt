@@ -1,8 +1,8 @@
 package clearMap.model.penner
 
 import clearMap.model.master.IMasterModel
-import clearMap.model.penner.behaviors.DrawnPennerBehavior
-import clearMap.model.penner.behaviors.PennerBehavior
+import clearMap.model.penner.mapBehaviors.DrawnPennerBehavior
+import clearMap.model.penner.mapBehaviors.PennerBehavior
 import rb.glow.GraphicsContext
 import rb.vectrix.linear.Vec2f
 import rb.vectrix.mathUtil.f
@@ -36,7 +36,7 @@ interface IPennerContext {
 }
 
 abstract class AbstractPenner(
-    val master: IMasterModel,
+    protected val master: IMasterModel,
     val context : IPennerContext,
     private val _keypressSystem: IKeypressSystem)
     : IPenner

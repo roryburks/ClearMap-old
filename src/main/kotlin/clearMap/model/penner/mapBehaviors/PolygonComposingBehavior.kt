@@ -1,8 +1,7 @@
-package clearMap.model.penner.behaviors
+package clearMap.model.penner.mapBehaviors
 
 import clearMap.model.map.CwMap
 import clearMap.model.penner.AbstractPenner
-import clearMap.model.penner.MapPenner
 import clearMap.model.penner.ViewSpace
 import clearMap.model.tools.collisionObjectBuilding.ColPolygonBuilder
 import rb.glow.GraphicsContext

@@ -1,9 +1,9 @@
 package clearMap.model.penner
 
 import clearMap.model.master.IMasterModel
-import clearMap.model.penner.behaviors.MovingViewBehavior
-import clearMap.model.penner.behaviors.PennerBehavior
-import clearMap.model.penner.behaviors.PolygonComposingBehavior
+import clearMap.model.penner.mapBehaviors.MovingViewBehavior
+import clearMap.model.penner.mapBehaviors.PennerBehavior
+import clearMap.model.penner.mapBehaviors.PolygonComposingBehavior
 import clearMap.model.tools.ColPolyTool
 import clearMap.ui.views.mapArea.MapSection
 import sgui.components.events.MouseEvent
