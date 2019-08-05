@@ -1,7 +1,8 @@
 package clearMap.model.penner.behaviors
 
 import clearMap.model.map.CwMap
-import clearMap.model.penner.Penner
+import clearMap.model.penner.AbstractPenner
+import clearMap.model.penner.MapPenner
 import clearMap.model.penner.ViewSpace
 import clearMap.model.tools.collisionObjectBuilding.ColPolygonBuilder
 import rb.glow.GraphicsContext
@@ -11,7 +12,7 @@ import sgui.components.events.MouseEvent
 import sgui.systems.KeypressCode
 
 class PolygonComposingBehavior (
-    penner: Penner,
+    penner: AbstractPenner,
     val map: CwMap)
     :DrawnPennerBehavior(penner)
 {

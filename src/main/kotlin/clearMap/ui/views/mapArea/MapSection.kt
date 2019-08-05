@@ -3,7 +3,8 @@ package clearMap.ui.views.mapArea
 import clearMap.hybrid.Hybrid
 import clearMap.model.IMasterModel
 import clearMap.model.map.CwMap
-import clearMap.model.penner.Penner
+import clearMap.model.penner.IPennerContext
+import clearMap.model.penner.MapPenner
 import clearMap.model.penner.ViewSpace
 import clearMap.ui.systems.omniContainer.IOmniComponent
 import rb.owl.bindable.addObserver
@@ -26,7 +27,7 @@ private const val scrollBuffer = 100
 class MapSection (
     private val _master: IMasterModel,
     private val _ui : IComponentProvider)
-    : IOmniComponent
+    : IOmniComponent, IPennerContext
 {
     val panel : ICrossPanel = _ui.CrossPanel()
 
@@ -35,7 +36,7 @@ class MapSection (
     override val icon: SwIcon? get() = null
     override val name: String get() = "Map"
 
-    val penner = Penner(_master, this, Hybrid.keypressSystem)
+    val penner = MapPenner(_master, this, Hybrid.keypressSystem)
 
     val currentMap get() = _master.mapSpace.mapsBind.currentlySelected
     val currentView  get() = currentMap?.run { _viewMap[this]} ?: _defaultView
@@ -93,7 +94,6 @@ class MapSection (
             panel.redraw()
         }
 
-
         val barSize = 16
         panel.setLayout {
             rows += {
@@ -116,8 +116,12 @@ class MapSection (
 
     }
 
-    // ==== Exposed Methods ====
-    fun refreshCoordinates( x: Int, y: Int) {
+    // ==== IPennerContext ====
+    override val view: ViewSpace get() = currentView
+
+    override fun redraw() = panel.redraw()
+
+    override fun refreshCoordinates( x: Int, y: Int) {
         coordinateLabel.text = "$x,$y"
 //        val map = currentMap
 //        if( map  != null && RectD(0.0,0.0,map.width.d, map.height.d).contains(x.d, y.d))

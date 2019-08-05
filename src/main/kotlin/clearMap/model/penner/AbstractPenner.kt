@@ -7,7 +7,6 @@ import clearMap.model.penner.behaviors.MovingViewBehavior
 import clearMap.model.penner.behaviors.PennerBehavior
 import clearMap.model.penner.behaviors.PolygonComposingBehavior
 import clearMap.model.tools.ColPolyTool
-import clearMap.ui.views.mapArea.MapSection
 import rb.glow.GraphicsContext
 import rb.owl.bindable.addObserver
 import rb.vectrix.linear.Vec2f
@@ -16,6 +15,7 @@ import rb.vectrix.mathUtil.floor
 import sgui.components.events.MouseEvent
 import sgui.systems.IKeypressSystem
 import sgui.systems.KeypressCode
+
 
 interface IPenner{
     fun step()
@@ -34,10 +34,17 @@ interface IPenner{
     fun pressKey(code: KeypressCode)
 }
 
-class Penner(
+interface IPennerContext {
+    val view: ViewSpace
+    fun redraw()
+    fun refreshCoordinates(x: Int, y: Int)
+}
+
+abstract class AbstractPenner(
     val master: IMasterModel,
-    val context: MapSection,
-    private val _keypressSystem: IKeypressSystem) : IPenner
+    val context : IPennerContext,
+    private val _keypressSystem: IKeypressSystem)
+    : IPenner
 {
     val holdingSpace get() = _keypressSystem.holdingSpace
     var holdingShift = false
@@ -66,8 +73,8 @@ class Penner(
         if( oldX != x || oldY != y) {
             behavior?.onMove()
             if( behavior is DrawnPennerBehavior)
-                context.panel.redraw()
-            context.refreshCoordinates(x, y)
+                context.redraw()
+            context.refreshCoordinates(x,y )
         }
 
         behavior?.onTock()
@@ -87,11 +94,9 @@ class Penner(
     override fun penDown(button: MouseEvent.MouseButton) {
         if( button == MouseEvent.MouseButton.UNKNOWN) return
 
-        val map = context.currentMap ?: return
-
         if( behavior != null) behavior?.onPenDown(button)
         else {
-            behavior = setBehavior(button, map)
+            behavior = setBehavior(button)
             behavior?.onStart()
         }
     }
@@ -102,13 +107,13 @@ class Penner(
 
     override fun reset() {
         behavior = null
-        context.panel.redraw()
+        context.redraw()
     }
 
     override fun rawUpdateX(rawX: Int) {
         if( this.rawX != rawX) {
             this.rawX = rawX
-            val p = context.currentView.tScreenToView.apply(Vec2f(rawX.f, rawY.f))
+            val p = context.view.tScreenToView.apply(Vec2f(rawX.f, rawY.f))
             xf = p.xf
             yf = p.yf
             x = p.xf.floor
@@ -119,7 +124,7 @@ class Penner(
     override fun rawUpdateY(rawY: Int) {
         if( this.rawY != rawY) {
             this.rawY = rawY
-            val p = context.currentView.tScreenToView.apply(Vec2f(rawX.f, rawY.f))
+            val p = context.view.tScreenToView.apply(Vec2f(rawX.f, rawY.f))
             xf = p.xf
             yf = p.yf
             x = p.xf.floor
@@ -134,18 +139,5 @@ class Penner(
         (behavior as? DrawnPennerBehavior)?.paintOverlay(gc, view)
     }
 
-    private fun setBehavior(button: MouseEvent.MouseButton, map: CwMap) : PennerBehavior? {
-        if( holdingSpace) return MovingViewBehavior(this, context.currentView)
-
-        val currentTool = master.tools.collision.selectedTool
-
-        return when {
-            currentTool is ColPolyTool -> PolygonComposingBehavior(this, map)
-            else -> null
-        }
-    }
-
-    private val onToolChangeK = master.tools.collision.selectedToolBinding.addObserver { _, _ ->
-        behavior?.end()
-    }
+    abstract fun setBehavior(button: MouseEvent.MouseButton) : PennerBehavior?
 }

@@ -2,8 +2,7 @@ package clearMap.ui.views.mapArea
 
 import clearMap.hybrid.Hybrid
 import clearMap.model.IMasterModel
-import clearMap.model.penner.IPenner
-import clearMap.model.penner.Penner
+import clearMap.model.penner.MapPenner
 import com.jogamp.opengl.GLAutoDrawable
 import com.jogamp.opengl.GLCapabilities
 import com.jogamp.opengl.GLEventListener
@@ -23,13 +22,13 @@ import javax.swing.SwingUtilities
 
 class JoglMapAreaPanel
 private constructor(
-    private val _penner: Penner,
+    private val _penner: MapPenner,
     private val _context: MapSection,
     private val _master: IMasterModel,
     private val _canvas: GLJPanel)
     :ISwComponent by SwComponent(_canvas)
 {
-    constructor(penner: Penner, context : MapSection, master: IMasterModel) : this(
+    constructor(penner: MapPenner, context : MapSection, master: IMasterModel) : this(
         penner,
         context,
         master,

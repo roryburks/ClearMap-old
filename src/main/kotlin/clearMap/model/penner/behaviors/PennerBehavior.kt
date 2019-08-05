@@ -1,12 +1,14 @@
 package clearMap.model.penner.behaviors
 
-import clearMap.model.penner.Penner
+import clearMap.model.penner.AbstractPenner
+import clearMap.model.penner.IPenner
+import clearMap.model.penner.MapPenner
 import clearMap.model.penner.ViewSpace
 import rb.glow.GraphicsContext
 import sgui.components.events.MouseEvent
 
 abstract class PennerBehavior(
-    val penner: Penner
+    val penner: AbstractPenner
 )
 {
     abstract fun onStart()
@@ -26,10 +28,10 @@ abstract class PennerBehavior(
     }
 }
 
-abstract class DrawnPennerBehavior(penner: Penner) : PennerBehavior(penner) {
+abstract class DrawnPennerBehavior(penner: AbstractPenner) : PennerBehavior(penner) {
 
     override fun onEnd() {
-        this.penner.context.panel.redraw()
+        this.penner.context.redraw()
     }
 
     abstract fun paintOverlay(gc: GraphicsContext, view: ViewSpace)

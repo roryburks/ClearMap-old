@@ -11,6 +11,11 @@ import clearMap.ui.systems.omniContainer.OmniSegment
 import clearMap.ui.systems.omniContainer.SubContainer
 import clearMap.ui.views.mapArea.MapSection
 import clearMap.ui.views.ViewSchemaView
+import clearMap.ui.views.tile.TileListView
+import clearMap.ui.views.tile.TileSegmentListView
+import clearMap.ui.views.tile.TileToolPropertyView
+import clearMap.ui.views.tile.TileToolView
+import clearMap.ui.views.tile.tileImageView.TileImageView
 import clearMap.ui.views.tools.ToolPanel
 import sgui.components.IComponentProvider
 import sgui.systems.KeypressSystem
@@ -42,9 +47,9 @@ class RootWindow(
         jMenuBar = bar
     }
 
+    // Map View
     private val _mapSection = MapSection(_master, _ui)
-
-    private val _omni = OmniContainer {
+    private val _mapOmni = OmniContainer {
         center = SubContainer(200, 400) {
             right += OmniSegment(ViewSchemaView(_master, _ui), 150, 150)
             center = OmniSegment(_mapSection, 200, 200)
@@ -52,20 +57,35 @@ class RootWindow(
         bottom += OmniSegment(ToolPanel(_master, _ui), 100, 100)
     }
 
+    // Tile View
+    private val _tileImageSection = TileImageView(_master, _ui)
+    private val _tileOmni = OmniContainer {
+        right += SubContainer(150, 150) {
+            center = OmniSegment(TileListView(_master, _ui), 200, 400)
+            bottom += OmniSegment(TileSegmentListView(_master, _ui), 100, 150)
+        }
+        center = SubContainer(200, 400) {
+            center = OmniSegment(_tileImageSection, 200, 400)
+            bottom += SubContainer(100, 100) {
+                left += OmniSegment(TileToolView(_master, _ui), 100, 150)
+                center =  OmniSegment(TileToolPropertyView(_master, _ui), 100, 150)
+            }
+        }
+    }
+
+    private val _tab = _ui.TabbedPane()
 
     init /* Layout */ {
+        _tab.addTab("Map View", _mapOmni)
+        _tab.addTab("Tile View", _tileOmni)
+
         this.layout = GridLayout()
 
         this.title = "Spirite"
 
         val multiLevel = _ui.CrossPanel {
-            // TODO: Fix with mouse input
-//            rows.addFlatGroup {
-//                add(topLevelView, flex = 1f)
-//                flex = 1f
-//            }
             rows.addFlatGroup {
-                add(_omni, flex = 1f)
+                add(_tab, flex = 1f)
                 flex = 1f
             }
         }
